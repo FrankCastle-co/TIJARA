@@ -1,0 +1,6 @@
+{
+  "name": "Tijara",
+  "description": "Tableau de bord intelligent pour e-commerçants Tijara : génération de landing pages produits, calculateur de profit, recherche de fournisseurs via IA, et simulateur de paiement BaridiMob.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

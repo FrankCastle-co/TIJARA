@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users Collection rules
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId) && 
+        request.resource.data.keys().hasAll(['userId', 'email', 'subscriptionStatus']) &&
+        request.resource.data.subscriptionStatus in ['free', 'business'];
+      allow update: if isAuthenticated();
+      allow delete: if false; // Profiles shouldn't be deleted easily
+
+      // Subcollections rules
+
+      // Product Sites (e-commerce landing pages) - read is public, write is owner
+      match /productSites/{siteId} {
+        allow read: if true; // Publicly accessible so buyers can view generated pages
+        allow create, update: if isOwner(userId) && 
+          request.resource.data.keys().hasAll(['siteId', 'userId', 'productName', 'price', 'slug', 'generatedHtml']);
+        allow delete: if isOwner(userId);
+      }
+
+      // Profit Calculations - owner only
+      match /profitCalculations/{calcId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // Supplier Searches - owner only
+      match /supplierSearches/{searchId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // Chat Sessions - owner only
+      match /chatSessions/{sessionId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // BaridiMob Subscription payments - owner only
+      match /baridiMobPayments/{paymentId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Global payments for administration
+    match /globalPayments/{paymentId} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}

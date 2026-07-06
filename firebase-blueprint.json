@@ -1,0 +1,121 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "UserProfile",
+      "description": "User account profile and subscription information",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Unique user ID" },
+        "email": { "type": "string", "description": "User email address" },
+        "subscriptionStatus": { "type": "string", "enum": ["free", "business"], "description": "Subscription tier" },
+        "companyName": { "type": "string", "description": "User company/store name" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Date of account creation" }
+      },
+      "required": ["userId", "email", "subscriptionStatus"]
+    },
+    "productSite": {
+      "title": "ProductSite",
+      "description": "Generated landing page for an e-commerce product",
+      "type": "object",
+      "properties": {
+        "siteId": { "type": "string", "description": "Unique landing page ID" },
+        "userId": { "type": "string", "description": "ID of the owner" },
+        "productName": { "type": "string", "description": "Name of the product" },
+        "productDescription": { "type": "string", "description": "Original description of the product" },
+        "features": { "type": "string", "description": "Extracted or generated product features" },
+        "price": { "type": "number", "description": "Selling price in DA" },
+        "slug": { "type": "string", "description": "URL-friendly path for the site" },
+        "imageUrl": { "type": "string", "description": "Product illustration/mockup image URL" },
+        "generatedHtml": { "type": "string", "description": "The complete generated responsive HTML code" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Time of generation" }
+      },
+      "required": ["siteId", "userId", "productName", "price", "slug", "generatedHtml"]
+    },
+    "profitCalculation": {
+      "title": "ProfitCalculation",
+      "description": "Saved e-commerce profit calculations",
+      "type": "object",
+      "properties": {
+        "calcId": { "type": "string", "description": "Unique calculation ID" },
+        "userId": { "type": "string", "description": "ID of the owner" },
+        "productName": { "type": "string", "description": "Name of the product calculated" },
+        "productCost": { "type": "number", "description": "Cost of purchase in DA" },
+        "sellingPrice": { "type": "number", "description": "Selling price in DA" },
+        "deliveryFees": { "type": "number", "description": "Delivery cost in DA" },
+        "deliverySuccessRate": { "type": "number", "description": "Estimated delivery success percentage (e.g. 70)" },
+        "marketingCostPerOrder": { "type": "number", "description": "Estimated cost of marketing per validation order in DA" },
+        "expectedProfit": { "type": "number", "description": "Calculated expected profit per shipped order" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Time of calculation" }
+      },
+      "required": ["calcId", "userId", "productName", "productCost", "sellingPrice", "deliveryFees", "expectedProfit"]
+    },
+    "supplierSearch": {
+      "title": "SupplierSearch",
+      "description": "Saved supplier deep search reports",
+      "type": "object",
+      "properties": {
+        "searchId": { "type": "string", "description": "Unique search ID" },
+        "userId": { "type": "string", "description": "ID of the owner" },
+        "query": { "type": "string", "description": "Search keyword / product type" },
+        "results": { "type": "string", "description": "Deep supplier search report in markdown format" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Time of search" }
+      },
+      "required": ["searchId", "userId", "query", "results"]
+    },
+    "chatSession": {
+      "title": "ChatSession",
+      "description": "Conversations with the AI Business Coach",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string", "description": "Unique session ID" },
+        "userId": { "type": "string", "description": "ID of the owner" },
+        "title": { "type": "string", "description": "First message or summarized title" },
+        "messages": { "type": "string", "description": "JSON serialized array of chat messages" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Time of creation" }
+      },
+      "required": ["sessionId", "userId", "title", "messages"]
+    },
+    "baridiMobPayment": {
+      "title": "BaridiMobPayment",
+      "description": "Simulated or actual BaridiMob transaction for business subscription",
+      "type": "object",
+      "properties": {
+        "paymentId": { "type": "string", "description": "Unique payment submission ID" },
+        "userId": { "type": "string", "description": "ID of the customer" },
+        "amount": { "type": "number", "description": "Amount paid (should be 4500 DA)" },
+        "senderRip": { "type": "string", "description": "RIP of the sender" },
+        "transactionReference": { "type": "string", "description": "Transaction ID or reference number" },
+        "screenshotUrl": { "type": "string", "description": "Uploaded confirmation screenshot URL" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"], "description": "Verification status" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Submission time" }
+      },
+      "required": ["paymentId", "userId", "amount", "senderRip", "transactionReference", "status"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "userProfile",
+      "description": "User profiles and subscription states"
+    },
+    "users/{userId}/productSites/{siteId}": {
+      "schema": "productSite",
+      "description": "E-commerce product landing pages generated by the user"
+    },
+    "users/{userId}/profitCalculations/{calcId}": {
+      "schema": "profitCalculation",
+      "description": "E-commerce margin and profit calculations"
+    },
+    "users/{userId}/supplierSearches/{searchId}": {
+      "schema": "supplierSearch",
+      "description": "Supplier deep search reports saved by the user"
+    },
+    "users/{userId}/chatSessions/{sessionId}": {
+      "schema": "chatSession",
+      "description": "Business chatbot conversations"
+    },
+    "users/{userId}/baridiMobPayments/{paymentId}": {
+      "schema": "baridiMobPayment",
+      "description": "BaridiMob subscription logs"
+    }
+  }
+}
